@@ -4,11 +4,13 @@
 # and for each file it prints the maximum number of repeating lines
 # (in the same file).
 
-
-if [${1} -eq 0 ]; then
+#Check the number of arguments
+if [ $# -ne 1 ]; then
     echo "Usage: $0 <directory>"
     exit 1
 fi
+
+#Check if it is a directory
 if [ ! -d "$1" ]; then
     echo "Error: $1 is not a directory"
     exit 1
@@ -19,7 +21,7 @@ dir=$1
 temp_file=$(mktemp)
 # Find all files in the directory and its subdirectories
 find "$dir" -type f > "$temp_file"
-# Loop through each file
+# Loop through each file (IFS - internal file separator)
 while IFS= read -r file; do
     # Get the maximum number of repeating lines in the file
     max_repeats=$(awk '{count[$0]++} END {for (line in count) if (count[line] > max) max = count[line]; print max}' "$file")

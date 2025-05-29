@@ -21,7 +21,7 @@ void search(const char *dir, const char *target, int out_fd) {
     struct dirent *entry;//pointer to a directory entry
     char path[BUF_SIZE];
 
-    while ((entry = readdir(dp)) != NULL) {     //readdir reads the nest entry in the directory
+    while ((entry = readdir(dp)) != NULL) {     //readdir reads the next entry in the directory
         // Skip current and parent directory entries
         if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
             continue;
@@ -29,7 +29,7 @@ void search(const char *dir, const char *target, int out_fd) {
         snprintf(path, sizeof(path), "%s/%s", dir, entry->d_name);      //build the full path to the file
 
         struct stat st;         //used to store information about file or directory
-        if (stat(path, &st) == -1) continue;        //fails if the file does not exists
+        if (stat(path, &st) == -1) continue;        //fails if the path is invalid
 
         if (S_ISDIR(st.st_mode)) {      //checks if it is a directory
             // Recurse into subdirectory
@@ -76,6 +76,7 @@ int main() {
 
         close(pipe1[0]);
         close(pipe2[1]);
+        exit(0);
     } else {
         //Client process
         close(pipe1[0]); // close read end of pipe1
@@ -99,6 +100,7 @@ int main() {
 
         close(pipe1[1]);
         close(pipe2[0]);
+        exit(0);
     }
 
     return 0;
